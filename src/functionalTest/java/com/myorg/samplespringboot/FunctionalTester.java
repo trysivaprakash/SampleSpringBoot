@@ -1,5 +1,6 @@
 package com.myorg.samplespringboot;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -13,6 +14,6 @@ public class FunctionalTester {
 
     @Test
     public void ensure_functional_testing_here() {
-
+        Assert.assertTrue(true);
     }
 }

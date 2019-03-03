@@ -23,6 +23,6 @@ public class Router {
       @ApiResponse(code = 500, message = "Internal server error")
   })
   public String message() {
-    return "Welcome to Sample Spring Boot Application!";
+    return "Welcome to Sample Spring Boot Application!"
   }
 }
