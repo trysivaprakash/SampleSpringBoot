@@ -1,0 +1,12 @@
+spring:
+  application:
+    name: sample-spring-boot
+  profiles:
+      active: unitTest
+datasource:
+  db2:
+    driverClass: org.h2.Driver
+    jdbcUrl: jdbc:h2:mem:default;DB_CLOSE_DELAY=-1
+    userId: sa
+    userPwd: ga9KNzlBTqSXwTqQny+Dnw==
+lcp: local
