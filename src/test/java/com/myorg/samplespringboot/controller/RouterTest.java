@@ -13,6 +13,8 @@ import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.test.web.servlet.RequestBuilder;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
+import java.io.UnsupportedEncodingException;
+
 @RunWith(SpringRunner.class)
 @WebMvcTest(value = {Router.class, SwaggerRouter.class}, secure = false)
 public class RouterTest {
@@ -54,5 +56,10 @@ public class RouterTest {
             Assert.fail(e.getMessage());
         }
         Assert.assertEquals(HttpStatus.OK.value(), mvcResult.getResponse().getStatus());
+        try {
+            Assert.assertNotNull(mvcResult.getResponse().getContentAsString());
+        } catch (UnsupportedEncodingException e) {
+            Assert.fail(e.getMessage());
+        }
     }
 }
