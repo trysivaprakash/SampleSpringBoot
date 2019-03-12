@@ -8,6 +8,10 @@ object PerfMotorEnvHolder {
   var maxRespTime = 0
   var scenarioName = ""
   var requestName = ""
+  
+  var token = ""
+  var loopCount = 20;
+  var rampUp = 100;
 
 //  val baseUrl = scala.util.Properties.envOrElse("baseURL", "")
 

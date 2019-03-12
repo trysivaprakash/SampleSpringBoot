@@ -9,12 +9,34 @@ import io.gatling.http.Predef._
 class PerfMotorSimulation() extends Simulation {
   val httpConf = http(configuration).baseURL(PerfMotorEnvHolder.baseUrl).disableWarmUp
   val maxRespTime = PerfMotorEnvHolder.maxRespTime
+  
+  val header = Map(
+  "Authorization" -> PerfMotorEnvHolder.token
+  )
+  
+  val bulkCsvRequestData = csv("gatling/data/requestData.csv");
+  
+  //base url should be in this format
+  val baseUrl = "http://localhost:8080/sample/message/${USER_ID}"
 
   val perfMotorScenario = scenario(PerfMotorEnvHolder.scenarioName)
-    .exec(http(PerfMotorEnvHolder.requestName).get("/sample/message")
-      .check(status is 200).check(responseTimeInMillis lessThan maxRespTime));
+  	.feed(bulkCsvRequestData)
+  	.repeat(PerfMotorEnvHolder.loopCount, "n") {
+    .exec(http(PerfMotorEnvHolder.requestName).get(baseUrl).headers(header)
+      .check(status is 200)
+      .check(responseTimeInMillis lessThan maxRespTime))
+      .check(bosyString.saveAs("response"))
+      .exec{
+      	session => 
+      		println(session("response").as[String])
+      		session
+      }
+   }
 
-  val perfMotorSimulation = perfMotorScenario.inject(atOnceUsers(100))
+  val perfMotorSimulation = perfMotorScenario.inject(atOnceUsers(PerfMotorEnvHolder.rampUp))
 
   setUp(perfMotorSimulation).protocols(httpConf)
+  .assertions(
+  	forAll.reponseTime.max.lt(1000)
+  )
 }
