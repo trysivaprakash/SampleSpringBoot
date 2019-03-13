@@ -53,7 +53,7 @@ $(function(){
 				let spanMethodElm = $('<span>').text(methodKey.toUpperCase()).addClass('endpointMethod');
 				spanMethodElm.appendTo(endpointElm);
 				
-				let spanPathElm = $('<span>').text(pathVal).addClass('endpointPath');
+				let spanPathElm = $('<span>').text(pathVal).attr('data-hosturl', hostUrl).addClass('endpointPath');
 				spanPathElm.appendTo(endpointElm);
 				
 				let btnElm = $('<button>').attr('data-endpointid', endpointKey).addClass('executeBtn').text('Execute');
@@ -73,11 +73,20 @@ $(function(){
 		let requestCount = $( "input[name='numberOfRequests']" ).val();
 		let loopCount = $( "input[name='loopCount']" ).val();
 		let endPointMethod = $(endpointDivElm).find("span.endpointMethod").html();
-		let endPointUrl = $(endpointDivElm).find("span.endpointPath").html();
+		let endPointUrl = "http://" + $(endpointDivElm).find("span.endpointPath").attr('data-hosturl') + $(endpointDivElm).find("span.endpointPath").html();
         //console.log('Button With Endpoint ID = ' + endpointId + " Clicked!");
 		let configData = {"requestCount" : requestCount, "loopCount" : loopCount, "endpointUrl" : endPointUrl, "requestMethod" : endPointMethod};
 		
 		console.log(configData);
+		
+		let file_data = $('input.csvFeederFile').prop('files');
+		
+		console.log(file_data);
+		
+		var dataWrapper = new FormData();
+		dataWrapper.append('feeder_csv', file_data);
+		dataWrapper.append("config_data", configData);
+		
 		
         /*$.get('http://jsonplaceholder.typicode.com/comments', {postId: postIdVal})
             .done(function(data){
