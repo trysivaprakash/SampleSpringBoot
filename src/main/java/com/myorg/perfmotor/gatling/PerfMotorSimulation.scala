@@ -15,7 +15,18 @@ class PerfMotorSimulation() extends Simulation {
   "Authorization" -> PerfMotorEnvHolder.token
   )
   
-  val bulkCsvRequestData = csv("/UserData.csv").circular;
+  var flag = true;
+  
+  try {
+   val bulkCsvRequestData  = csv("/carData.csv").circular
+  println(">>>>>>>>>>>>> userData : "+bulkCsvRequestData)
+  }
+  catch {
+    case exception : Exception => {
+      flag = false;
+    }
+  }
+  
   
   val temp = PerfMotorEnvHolder.loopCount*PerfMotorEnvHolder.rampUp
   
@@ -23,8 +34,8 @@ class PerfMotorSimulation() extends Simulation {
 
 
   val perfMotorScenario = scenario(PerfMotorEnvHolder.scenarioName)
-  	.doIf(null !=bulkCsvRequestData && ("GET".equals(PerfMotorEnvHolder.httpMethod))) {
-  	 feed(bulkCsvRequestData)  	
+  	.doIf(flag && ("GET".equals(PerfMotorEnvHolder.httpMethod))) {
+  	 feed(csv("/carData.csv").circular)  	
   	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
       exec(
 	      http(PerfMotorEnvHolder.requestName)
@@ -41,8 +52,8 @@ class PerfMotorSimulation() extends Simulation {
       //}	
    )}
   	}
-  .doIf(null !=bulkCsvRequestData && ("POST".equals(PerfMotorEnvHolder.httpMethod))){
-  	 feed(bulkCsvRequestData)  	
+  .doIf(flag && ("POST".equals(PerfMotorEnvHolder.httpMethod))){
+  	 feed(csv("/carData.csv").circular)  	
   	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
       exec(
 	      http(PerfMotorEnvHolder.requestName)
@@ -68,6 +79,44 @@ class PerfMotorSimulation() extends Simulation {
 	      .httpRequest("GET", PerfMotorEnvHolder.baseUrl)
 	      .headers(header)
 	      .body(RawFileBody("/postBody.json"))
+	      .check(status.is(200))
+   )}}
+  .doIf(flag && ("PUT".equals(PerfMotorEnvHolder.httpMethod))){
+  	 feed(csv("/carData.csv").circular)  	
+  	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
+      exec(
+	      http(PerfMotorEnvHolder.requestName)
+	      .httpRequest("GET", PerfMotorEnvHolder.baseUrl)
+	      .headers(header)
+	      .body(RawFileBody("/postBody.json"))
+	      .check(status.is(200))
+   )}}
+  .doIf("PUT".equals(PerfMotorEnvHolder.httpMethod)){
+  	 feed(csv("/carData.csv").circular)  	
+  	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
+      exec(
+	      http(PerfMotorEnvHolder.requestName)
+	      .httpRequest("GET", PerfMotorEnvHolder.baseUrl)
+	      .headers(header)
+	      .body(RawFileBody("/postBody.json"))
+	      .check(status.is(200))
+   )}}
+  .doIf(flag && ("DELETE".equals(PerfMotorEnvHolder.httpMethod))){
+  	 feed(csv("/carData.csv").circular)  	
+  	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
+      exec(
+	      http(PerfMotorEnvHolder.requestName)
+	      .httpRequest("GET", PerfMotorEnvHolder.baseUrl)
+	      .headers(header)
+	      .check(status.is(200))
+   )}}
+  .doIf("DELETE".equals(PerfMotorEnvHolder.httpMethod)){
+  	 feed(csv("/carData.csv").circular)  	
+  	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
+      exec(
+	      http(PerfMotorEnvHolder.requestName)
+	      .httpRequest("GET", PerfMotorEnvHolder.baseUrl)
+	      .headers(header)
 	      .check(status.is(200))
    )}}
 

@@ -13,7 +13,7 @@ object PerfMotorEnvHolder {
   var loopCount = 20
   var rampUp = 100
   var httpMethod = ""
-  var dataDirectory = ""
+  var dataDirectory = "defaultEmptyData.csv"
   var test = ""
 
 //  val baseUrl = scala.util.Properties.envOrElse("baseURL", "")
