@@ -10,8 +10,11 @@ object PerfMotorEnvHolder {
   var requestName = ""
   
   var token = ""
-  var loopCount = 20;
-  var rampUp = 100;
+  var loopCount = 20
+  var rampUp = 100
+  var httpMethod = ""
+  var dataDirectory = ""
+  var test = ""
 
 //  val baseUrl = scala.util.Properties.envOrElse("baseURL", "")
 
