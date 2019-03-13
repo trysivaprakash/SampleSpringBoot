@@ -2,7 +2,7 @@ package com.myorg.perfmotor.controller;
 
 import com.myorg.perfmotor.beans.PerfMotorExecVars;
 import com.myorg.perfmotor.beans.ServiceDetails;
-import com.myorg.perfmotor.gatling.PerfMotorEnvHolder;
+//import com.myorg.perfmotor.gatling.PerfMotorEnvHolder;
 import com.myorg.perfmotor.util.Assister;
 import com.myorg.perfmotor.util.PerfMotorException;
 import io.gatling.app.Gatling;
@@ -81,10 +81,10 @@ public class PerfMotorRouter {
         perfMotorExecVars.setRequestName("Sample Request Name");
         perfMotorExecVars.setScenarioName("Sample Scenario Name");
 
-        PerfMotorEnvHolder.baseUrl_$eq(baseUrl);
-        PerfMotorEnvHolder.maxRespTime_$eq(500);
-        PerfMotorEnvHolder.requestName_$eq("Sample_req");
-        PerfMotorEnvHolder.scenarioName_$eq("sample scen");
+//        PerfMotorEnvHolder.baseUrl_$eq(baseUrl);
+//        PerfMotorEnvHolder.maxRespTime_$eq(500);
+//        PerfMotorEnvHolder.requestName_$eq("Sample_req");
+//        PerfMotorEnvHolder.scenarioName_$eq("sample scen");
 
         executeRun(props);
         return "All complete";
