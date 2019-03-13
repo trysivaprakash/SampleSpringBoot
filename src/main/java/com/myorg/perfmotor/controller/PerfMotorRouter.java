@@ -72,7 +72,8 @@ public class PerfMotorRouter {
     @RequestMapping(value = "/runPerformanceTest", method = RequestMethod.GET)
     @ResponseBody
     public String runPerformanceTest(HttpServletRequest httpServletRequest) throws PerfMotorException {
-        String baseUrl = "http://localhost:8080/students/${USER_ID}";
+        //String baseUrl = "http://localhost:8080/students/${USER_ID}";
+        String baseUrl = "http://localhost:8082/ford/cars";
         String httpMethod = "GET";
         String contentType = "application/json";
 

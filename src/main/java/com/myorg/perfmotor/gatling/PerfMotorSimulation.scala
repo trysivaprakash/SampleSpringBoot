@@ -1,5 +1,6 @@
 package com.myorg.perfmotor.gatling
 
+import scala.util.Random
 import io.gatling.core.Predef.Simulation
 import io.gatling.core.Predef.configuration
 import io.gatling.http.Predef.http
@@ -15,21 +16,16 @@ class PerfMotorSimulation() extends Simulation {
   )
   
   val bulkCsvRequestData = csv("/UserData.csv").circular;
-  var postJson = RawFileBody("/postBody.json")
-  println(">>>>>>>>>>>>>>>>>: "+bulkCsvRequestData)
-  //val perfMotorScenario = scenario(PerfMotorEnvHolder.scenarioName)
-  if(null != bulkCsvRequestData) {
   
-  }
+  val temp = PerfMotorEnvHolder.loopCount*PerfMotorEnvHolder.rampUp
   
-  //base url should be in this format
-  val baseUrl = "http://localhost:8080/sample/message/${USER_ID}"
+  val feeder = Iterator.continually(Map("emailllllll" -> (Random.alphanumeric.take(temp).mkString + "@foo.com")))
+
 
   val perfMotorScenario = scenario(PerfMotorEnvHolder.scenarioName)
-  	.doIf(null !=bulkCsvRequestData) {
-  	 feed(bulkCsvRequestData)  	 
-  	}
-  	.repeat(PerfMotorEnvHolder.loopCount, "n") {
+  	.doIf(null !=bulkCsvRequestData && ("GET".equals(PerfMotorEnvHolder.httpMethod))) {
+  	 feed(bulkCsvRequestData)  	
+  	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
       exec(
 	      http(PerfMotorEnvHolder.requestName)
 	      .httpRequest("GET", PerfMotorEnvHolder.baseUrl)
@@ -44,11 +40,42 @@ class PerfMotorSimulation() extends Simulation {
       		//session
       //}	
    )}
+  	}
+  .doIf(null !=bulkCsvRequestData && ("POST".equals(PerfMotorEnvHolder.httpMethod))){
+  	 feed(bulkCsvRequestData)  	
+  	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
+      exec(
+	      http(PerfMotorEnvHolder.requestName)
+	      .httpRequest("GET", PerfMotorEnvHolder.baseUrl)
+	      .headers(header)
+	      .body(RawFileBody("/postBody.json"))
+	      .check(status.is(200))
+   )}}
+    .doIf("GET".equals(PerfMotorEnvHolder.httpMethod)){
+  	 feed(feeder)  	
+  	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
+      exec(
+	      http(PerfMotorEnvHolder.requestName)
+	      .httpRequest("GET", PerfMotorEnvHolder.baseUrl)
+	      .headers(header)
+	      .check(status.is(200))
+   )}}
+  .doIf("POST".equals(PerfMotorEnvHolder.httpMethod)){
+  	 feed(feeder)  	
+  	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
+      exec(
+	      http(PerfMotorEnvHolder.requestName)
+	      .httpRequest("GET", PerfMotorEnvHolder.baseUrl)
+	      .headers(header)
+	      .body(RawFileBody("/postBody.json"))
+	      .check(status.is(200))
+   )}}
+
 
   val perfMotorSimulation = perfMotorScenario.inject(atOnceUsers(PerfMotorEnvHolder.rampUp))
 
   setUp(perfMotorSimulation).protocols(httpConf)
-  //.assertions(
+  .assertions(
   	//forAll.reponseTime.max.lt(1000)
-  //)
+  )
 }
