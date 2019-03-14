@@ -8320,7 +8320,11 @@
         var x = n.buildRequest(xx);
         var temp1 = n.buildRequest(xx); 
 		
-		x.url = "http://localhost:8082/runPerfMotor";
+		temp1.nbrOfReq = document.getElementById("nbrOfReq").value;	
+		temp1.nbrOfLoops = document.getElementById("nbrOfLoops").value;
+		temp1.fileContent = fileContent;
+			
+		x.url = "/runPerfMotor";
 		x.body = temp1;
 		x.method = "POST";
 			
@@ -8335,21 +8339,25 @@
               o = (0, i.default)({}, n),
 			  temp2 = (0, i.default)({}, n);
 			
-			o.url = "http://localhost:8082/runPerfMotor";
+			temp2.nbrOfReq = document.getElementById("nbrOfReq").value;
+			temp2.nbrOfLoops = document.getElementById("nbrOfLoops").value;
+			temp2.fileContent = fileContent;
+			
+			o.url = "/runPerfMotor";
 			o.body = temp2;
 			o.method = "POST";
 			
-			n.url = "http://localhost:8082/runPerfMotor";
+			n.url = "/runPerfMotor";
 			n.body = JSON.stringify(temp2);
 			n.method = "POST";
-			
-		
+					
           return r.setMutatedRequest(e.pathName, e.method, o), n
         }, e.responseInterceptor = m;
         var S = Date.now();
         return n.execute(e).then(function(t) {
           t.duration = Date.now() - S, r.setResponse(e.pathName, e.method, t)
         }).catch(function(t) {
+			//alert(JSON.stringify(t));
           return r.setResponse(e.pathName, e.method, {
             error: !0,
             err: (0, h.default)(t)

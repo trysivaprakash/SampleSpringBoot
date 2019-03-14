@@ -31,10 +31,29 @@
   </head>
 
   <body>
+    <div id="perf-motor-ui"></div>
     <div id="swagger-ui"></div>
 
     <script src="./swagger-ui-bundle.js"> </script>
     <script src="./swagger-ui-standalone-preset.js"> </script>
+    <script src="./perf-motor-config.js"> </script>
+    <script>
+      var fileContent = false;
+      function readSingleFile(evt) {
+        //Retrieve the first (and only!) File from the FileList object
+        var f = evt.target.files[0];
+
+        if (f) {
+          var fileReader = new FileReader();
+          fileReader.onload = function(e) {
+            fileContent = e.target.result;
+          }
+          fileReader.readAsText(f);
+        } else {
+          alert("Failed to load file");
+        }
+      }
+    </script>
     <script>
     window.onload = function() {
       // Begin Swagger UI call region
@@ -53,7 +72,7 @@
       })
       // End Swagger UI call region
 
-      window.ui = ui
+      window.ui = ui;
     }
   </script>
   </body>
