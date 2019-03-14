@@ -1,5 +1,6 @@
 package com.myorg.perfmotor.controller;
 
+import com.myorg.perfmotor.beans.ConfigData;
 import com.myorg.perfmotor.beans.PerfMotorExecVars;
 import com.myorg.perfmotor.beans.ServiceDetails;
 //import com.myorg.perfmotor.gatling.PerfMotorEnvHolder;
@@ -11,11 +12,16 @@ import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import java.io.File;
 import java.io.IOException;
 
@@ -90,6 +96,23 @@ public class PerfMotorRouter {
         return "All complete";
     }
 
+    @PostMapping(path = "/executePerformanceTest", consumes = { "multipart/mixed" }, headers = {
+    "content-type=multipart/mixed", "content-type=multipart/form-data" })
+    public String executePerformanceTest(
+    		@RequestParam("feeder_csv") MultipartFile feederFile,
+    		@RequestParam("config_data") String jsonData, HttpServletRequest request, HttpServletResponse response) {
+    	
+    	if(feederFile != null) {
+    		System.out.println("File Size Recieved is: " + feederFile.getSize());	
+    	}else {
+    		System.out.println("File Recieved is null!");
+    	}
+    	
+    	System.out.println("JSON Data Recieved is: " + jsonData);
+    	
+    	return "Hola From Execute Performance Test!";
+    }
+    
     private void executeRun(GatlingPropertiesBuilder props) throws PerfMotorException {
 
         try {

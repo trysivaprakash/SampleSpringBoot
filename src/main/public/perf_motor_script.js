@@ -73,41 +73,36 @@ $(function(){
 		let requestCount = $( "input[name='numberOfRequests']" ).val();
 		let loopCount = $( "input[name='loopCount']" ).val();
 		let endPointMethod = $(endpointDivElm).find("span.endpointMethod").html();
-		let endPointUrl = "http://" + $(endpointDivElm).find("span.endpointPath").attr('data-hosturl') + $(endpointDivElm).find("span.endpointPath").html();
+		let endPointUrl = /*"http://" + $(endpointDivElm).find("span.endpointPath").attr('data-hosturl') +*/ $(endpointDivElm).find("span.endpointPath").html();
         //console.log('Button With Endpoint ID = ' + endpointId + " Clicked!");
 		let configData = {"requestCount" : requestCount, "loopCount" : loopCount, "endpointUrl" : endPointUrl, "requestMethod" : endPointMethod};
 		
-		console.log(configData);
+		//console.log(configData);
 		
-		let file_data = $('input.csvFeederFile').prop('files');
+		let file_data = $('#csvFeederFileId')[0].files[0];
 		
-		console.log(file_data);
+		//console.log(file_data);
 		
 		var dataWrapper = new FormData();
 		dataWrapper.append('feeder_csv', file_data);
-		dataWrapper.append("config_data", configData);
+		dataWrapper.append("config_data", JSON.stringify(configData));
+		/*dataWrapper.append('config_data', new Blob([JSON.stringify(configData)], 
+			{
+                type: "application/json"
+            }));*/
 		
 		
-        /*$.get('http://jsonplaceholder.typicode.com/comments', {postId: postIdVal})
-            .done(function(data){
-                container.show();
-                $.each(data, function(index, element) {
-
-                    let emailElm = $('<span>').text(element.email).addClass('commentEmail');
-                    let titleElm = $('<span>').text(element.name).addClass('commentTitle');
-                    let pElm = $('<p>').text(element.body);
-
-                    let commentElm = $('<div>').addClass('comment');
-
-                    emailElm.appendTo(commentElm);
-                    titleElm.appendTo(commentElm);
-                    pElm.appendTo(commentElm);
-
-                    commentElm.appendTo(container);
-
-                });
-                event.stopPropagation();
-            });*/
+		$.ajax({
+			url: 'http://localhost:8082/executePerformanceTest',
+			data: dataWrapper,
+			cache: false,
+			contentType:false,
+			processData: false,
+			method: 'POST',
+			success: function(data){
+				alert(data);
+			}
+		});		
 
     });
 	

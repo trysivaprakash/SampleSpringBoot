@@ -21,6 +21,7 @@ public class SwaggerConfig {
 	    config.addAllowedMethod("*");
 
 	    source.registerCorsConfiguration("/v2/api-docs", config);
+	    source.registerCorsConfiguration("/executePerformanceTest", config);
 	    return new CorsFilter(source);
 	}
 	
