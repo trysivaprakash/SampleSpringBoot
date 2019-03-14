@@ -3,7 +3,11 @@ spring:
     name: sample-spring-boot
   mvc:
     view:
-      prefix: /views/**/
+      prefix: /resources/
       suffix: .html
+  resources:
+    add-mappings: true
+
 server:
   port: 8082
+
