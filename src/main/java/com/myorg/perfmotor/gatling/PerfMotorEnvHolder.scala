@@ -15,6 +15,7 @@ object PerfMotorEnvHolder {
   var httpMethod = ""
   var dataDirectory = "defaultEmptyData.csv"
   var test = ""
+  var jsonBody = ""
 
 //  val baseUrl = scala.util.Properties.envOrElse("baseURL", "")
 

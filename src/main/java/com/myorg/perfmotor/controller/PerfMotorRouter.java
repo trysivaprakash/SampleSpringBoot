@@ -13,6 +13,7 @@ import java.util.ResourceBundle;
 
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.io.FileUtils;
+import org.json.JSONObject;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
@@ -63,10 +64,12 @@ public class PerfMotorRouter {
     //@ResponseBody
     public String runPerformanceTest(HttpServletRequest httpServletRequest) throws PerfMotorException {
         //String baseUrl = "http://localhost:8080/students/${USER_ID}";
-        String baseUrl = "http://localhost:8082/ford/cars/colors/${carName}";
-        String httpMethod = "GET";
+        //String baseUrl = "http://localhost:8082/ford/cars/colors/${carName}";
+    	String baseUrl = "http://localhost:8082/ford/cars";
+        String httpMethod = "POST";
         String contentType = "application/json";
         String feederDataFileName = "placeHoldeFeeder.csv";
+        String jsonBody = "{\"name\":\"John\", \"surname\":\"Doe\"}";
 
         GatlingPropertiesBuilder props = new GatlingPropertiesBuilder();
         props.simulationClass(simulationClass);
@@ -92,6 +95,7 @@ public class PerfMotorRouter {
         PerfMotorEnvHolder.token_$eq("beare "+httpServletRequest.getHeader("Authorization"));
         PerfMotorEnvHolder.dataDirectory_$eq(feederDataFileName);
         PerfMotorEnvHolder.httpMethod_$eq(httpMethod);
+        PerfMotorEnvHolder.test_$eq(jsonBody);
 
         executeRun(props);
         
