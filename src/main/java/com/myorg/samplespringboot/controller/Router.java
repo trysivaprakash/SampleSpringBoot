@@ -101,7 +101,7 @@ public class Router {
     }
     
     @RequestMapping(method = RequestMethod.POST, path = "/cars/colors")
-    @ApiOperation(value = "Add Color to the Car",
+    @ApiOperation(value = "POST with BODY",
             notes = "To return the message", response = String.class, httpMethod = "POST")
     @ApiResponses(value = {
             @ApiResponse(code = 422, message = "Unprocessable Entity (Invalid request content)."),
@@ -165,7 +165,7 @@ public class Router {
     }
     
     @PutMapping("/cars/colors")
-    @ApiOperation(value = "Update latest Color to the existing",
+    @ApiOperation(value = "UPDATE with Body ",
             notes = "To return the message", response = String.class, httpMethod = "PUT")
     @ApiResponses(value = {
             @ApiResponse(code = 422, message = "Unprocessable Entity (Invalid request content)."),
@@ -177,7 +177,7 @@ public class Router {
     }
     
     @PutMapping("/cars/{carName}/price")
-    @ApiOperation(value = "POST with Header,body  and PATH Params",
+    @ApiOperation(value = "UPDATE with Header,body  and PATH Params",
             notes = "To return the message", response = String.class, httpMethod = "PUT",consumes =MediaType.APPLICATION_FORM_URLENCODED_VALUE)
     @ApiResponses(value = {
             @ApiResponse(code = 422, message = "Unprocessable Entity (Invalid request content)."),
@@ -196,7 +196,7 @@ public class Router {
 //DELETE STARTS FROM HERE
     
     @DeleteMapping("/cars/{carName}")
-    @ApiOperation(value = "Delete the Car",
+    @ApiOperation(value = "This is DELETE",
             notes = "To return the message", response = String.class, httpMethod = "DELETE")
     @ApiResponses(value = {
             @ApiResponse(code = 422, message = "Unprocessable Entity (Invalid request content)."),
@@ -210,7 +210,7 @@ public class Router {
     }
     
     @DeleteMapping("/cars/colors/{colorName}")
-    @ApiOperation(value = "Deleting the Following Color of the Car",
+    @ApiOperation(value = "Delete with PATH Param",
             notes = "To return the message", response = String.class, httpMethod = "DELETE")
     @ApiResponses(value = {
             @ApiResponse(code = 422, message = "Unprocessable Entity (Invalid request content)."),
@@ -223,7 +223,7 @@ public class Router {
     
     
     @DeleteMapping("/cars/colors/{carName}/{modelYear}")
-    @ApiOperation(value = "Delete the Following Color of the Car of modelYear",
+    @ApiOperation(value = "Delete with multy PATH Params",
             notes = "To return the message", response = String.class, httpMethod = "DELETE")
     @ApiResponses(value = {
             @ApiResponse(code = 422, message = "Unprocessable Entity (Invalid request content)."),
