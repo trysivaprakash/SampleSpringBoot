@@ -9,6 +9,8 @@ import io.gatling.app.Gatling;
 import io.gatling.core.config.GatlingPropertiesBuilder;
 import java.io.File;
 import java.io.IOException;
+import java.util.ResourceBundle;
+
 import javax.servlet.http.HttpServletRequest;
 import org.apache.commons.io.FileUtils;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -23,7 +25,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 public class PerfMotorRouter {
 
   //private final String reportPath = System.getProperty("user.dir") + "/src/main/gatling/reports";
-	private final String reportPath = System.getProperty("user.dir") + "/src/main/webapp/views";
+  private final String reportPath = System.getProperty("user.dir") + "/src/main/webapp/views";
   private final String simulationClass = "com.myorg.perfmotor.gatling.PerfMotorSimulation";
   private final String dataDirectory = System.getProperty("user.dir") + "/src/main/gatling/data";
 
@@ -70,6 +72,7 @@ public class PerfMotorRouter {
         props.simulationClass(simulationClass);
         props.resultsDirectory(reportPath);
         props.dataDirectory(dataDirectory);
+        //props.outputDirectoryBaseName("hello");
         
         System.out.println(">>>>>>dat dir "+dataDirectory);
         
@@ -91,8 +94,16 @@ public class PerfMotorRouter {
         PerfMotorEnvHolder.httpMethod_$eq(httpMethod);
 
         executeRun(props);
+        
+        File file = new File(System.getProperty("user.dir") + "/src/main/webapp/views");
+        String[] listOfSubfolders = file.list();
+        String actualReportFolder = listOfSubfolders[0];
+        System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>... Actual report folder name: "+actualReportFolder);
+        
+        //ResourceBundle bundle = ResourceBundle.getBundle("application");
+        
     //return getUrl(httpServletRequest).toString();
-        return "index";
+        return actualReportFolder + "/index";
   }
 
   private StringBuilder getUrl(HttpServletRequest request) {

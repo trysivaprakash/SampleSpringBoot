@@ -41,15 +41,7 @@ class PerfMotorSimulation() extends Simulation {
 	      http(PerfMotorEnvHolder.requestName)
 	      .httpRequest("GET", PerfMotorEnvHolder.baseUrl)
 	      .headers(header)
-	      //.body(postJson)
 	      .check(status.is(200))
-	      //.check(responseTimeInMillis lessThan maxRespTime))
-	      //.check(bodyString.saveAs("response")))
-      //.exec{
-      	//session => 
-      		//println(session("response").as[String])
-      		//session
-      //}	
    )}
   	}
   .doIf(flag && ("POST".equals(PerfMotorEnvHolder.httpMethod))){

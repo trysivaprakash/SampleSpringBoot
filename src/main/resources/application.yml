@@ -1,9 +1,7 @@
 spring:
   application:
     name: sample-spring-boot
-  mvc:
-    view:
-      prefix: /views/**/
-      suffix: .html
+
+
 server:
   port: 8082
