@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.myorg.samplespringboot.domain.SimpleMessage;
+
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import io.swagger.annotations.ApiParam;
@@ -93,11 +95,11 @@ public class Router {
         @ApiResponse(code = 422, message = "Unprocessable Entity (Invalid request content)."),
         @ApiResponse(code = 500, message = "Internal server error")
     })
-    public String postThis(@ApiParam("Auth token") @RequestHeader("token") String token,
-        @ApiParam("body")  @RequestBody String cars
+    public String postThis(
+        @ApiParam("body")  @RequestBody SimpleMessage cars
     ) {
-        System.out.println("Add your cars like Mustang, Fusion, GT ... etc");
-        return "The below cars you have added\n"+cars;
+        System.out.println("Add your cars like Mustang, Fusion, GT ... etc "+ cars.getContent()) ;
+        return "The below cars you have added\n"+cars.getContent();
     }
 
     @RequestMapping(method = RequestMethod.POST, path = "/cars/colors")

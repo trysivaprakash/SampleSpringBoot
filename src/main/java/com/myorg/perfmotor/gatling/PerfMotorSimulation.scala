@@ -8,7 +8,7 @@ import io.gatling.http.Predef.http
 import io.gatling.core.Predef._
 import io.gatling.http.Predef._
 
-class PerfMotorSimulation() extends Simulation {
+class PerfMotorSimulation extends Simulation {
   val httpConf = http(configuration).baseURL(PerfMotorEnvHolder.baseUrl).disableWarmUp
   val maxRespTime = PerfMotorEnvHolder.maxRespTime
   
@@ -20,7 +20,7 @@ class PerfMotorSimulation() extends Simulation {
   var jsonBOdyFlag = true;
   
   try {
-   val bulkCsvRequestData  = csv("/dcarData.csv").circular
+   val bulkCsvRequestData  = csv("/carData.csv").circular
   println(">>>>>>>>>>>>> userData : "+bulkCsvRequestData)
   }
   catch {
@@ -34,7 +34,8 @@ class PerfMotorSimulation() extends Simulation {
   }
   println(">>>>>>> feederDataFlag : "+flag)
   println(">>>>>>> jsonBodyDataFlag : "+jsonBOdyFlag)
-   println(">>>>>>> jsonBodyData : "+jsonBOdyFlag)
+  println(">>>>>>> jsonBodyData : "+PerfMotorEnvHolder.test)
+  println("request method : >>>>  " + "\"\"\"" + PerfMotorEnvHolder.httpMethod + "\"\"\"")
   
   
   val temp = PerfMotorEnvHolder.loopCount*PerfMotorEnvHolder.rampUp
@@ -42,25 +43,26 @@ class PerfMotorSimulation() extends Simulation {
   val feeder = Iterator.continually(Map("emailllllll" -> (Random.alphanumeric.take(temp).mkString + "@foo.com")))
 
 
-  val perfMotorScenario = scenario(PerfMotorEnvHolder.scenarioName)
+  val perfMotorScenario = scenario(PerfMotorEnvHolder.scenarioName+(PerfMotorEnvHolder.maxRespTime))
   	.doIf(flag && ("GET".equals(PerfMotorEnvHolder.httpMethod))) {
   	 feed(csv("/carData.csv").circular)  	
   	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
       exec(
 	      http(PerfMotorEnvHolder.requestName)
-	      .httpRequest("GET", PerfMotorEnvHolder.baseUrl)
+	      .httpRequest(PerfMotorEnvHolder.requestName, PerfMotorEnvHolder.baseUrl)
 	      .headers(header)
 	      .check(status.is(200))
    )}
   	}
   .doIf(flag && ("POST".equals(PerfMotorEnvHolder.httpMethod))){
+    println(">>>>>>>>> I am in the right spot....")
   	 feed(csv("/carData.csv").circular)  	
   	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
       exec(
 	      http(PerfMotorEnvHolder.requestName)
-	      .httpRequest("GET", PerfMotorEnvHolder.baseUrl)
+	      .httpRequest(PerfMotorEnvHolder.httpMethod, PerfMotorEnvHolder.baseUrl)
 	      .headers(header)
-	      .body(RawFileBody("/postBody.json"))
+	      .body(StringBody(PerfMotorEnvHolder.test)).asJSON
 	      .check(status.is(200))
    )}}
     .doIf("GET".equals(PerfMotorEnvHolder.httpMethod)){
@@ -77,9 +79,9 @@ class PerfMotorSimulation() extends Simulation {
   	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
       exec(
 	      http(PerfMotorEnvHolder.requestName)
-	      .httpRequest("GET", PerfMotorEnvHolder.baseUrl)
+	      .httpRequest(PerfMotorEnvHolder.httpMethod, PerfMotorEnvHolder.baseUrl)
 	      .headers(header)
-	      .body(StringBody("""{ "myContent": "myHardCodedValue" }"""))
+	      .body(StringBody(PerfMotorEnvHolder.test)).asJSON
 	      .check(status.is(200))
    )}}
   .doIf(flag && ("PUT".equals(PerfMotorEnvHolder.httpMethod))){
@@ -87,7 +89,7 @@ class PerfMotorSimulation() extends Simulation {
   	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
       exec(
 	      http(PerfMotorEnvHolder.requestName)
-	      .httpRequest("GET", PerfMotorEnvHolder.baseUrl)
+	      .httpRequest(PerfMotorEnvHolder.requestName, PerfMotorEnvHolder.baseUrl)
 	      .headers(header)
 	      .body(RawFileBody("/postBody.json"))
 	      .check(status.is(200))
@@ -97,7 +99,7 @@ class PerfMotorSimulation() extends Simulation {
   	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
       exec(
 	      http(PerfMotorEnvHolder.requestName)
-	      .httpRequest("GET", PerfMotorEnvHolder.baseUrl)
+	      .httpRequest(PerfMotorEnvHolder.requestName, PerfMotorEnvHolder.baseUrl)
 	      .headers(header)
 	      .body(RawFileBody("/postBody.json"))
 	      .check(status.is(200))
@@ -107,7 +109,7 @@ class PerfMotorSimulation() extends Simulation {
   	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
       exec(
 	      http(PerfMotorEnvHolder.requestName)
-	      .httpRequest("GET", PerfMotorEnvHolder.baseUrl)
+	      .httpRequest(PerfMotorEnvHolder.requestName, PerfMotorEnvHolder.baseUrl)
 	      .headers(header)
 	      .check(status.is(200))
    )}}
@@ -116,7 +118,7 @@ class PerfMotorSimulation() extends Simulation {
   	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
       exec(
 	      http(PerfMotorEnvHolder.requestName)
-	      .httpRequest("GET", PerfMotorEnvHolder.baseUrl)
+	      .httpRequest(PerfMotorEnvHolder.requestName, PerfMotorEnvHolder.baseUrl)
 	      .headers(header)
 	      .check(status.is(200))
    )}}
@@ -128,4 +130,5 @@ class PerfMotorSimulation() extends Simulation {
   .assertions(
   	//forAll.reponseTime.max.lt(1000)
   )
+  PerfMotorEnvHolder.maxRespTime = PerfMotorEnvHolder.maxRespTime + 1;
 }
