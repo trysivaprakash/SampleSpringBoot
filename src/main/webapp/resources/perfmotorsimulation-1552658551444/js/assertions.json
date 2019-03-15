@@ -1,9 +1,9 @@
 {
   "simulation": "com.myorg.perfmotor.gatling.PerfMotorSimulation",
   "simulationId": "perfmotorsimulation",
-  "start": 1552587705167,
+  "start": 1552658551444,
   "description": "",
-  "scenarios": ["sample scen"],
+  "scenarios": ["sample scen500"],
   "assertions": [
 
   ]
