@@ -160,10 +160,10 @@ public class Router {
         @ApiResponse(code = 500, message = "Internal server error")
     })
     public String putThis(@ApiParam("Auth token") @RequestHeader("token") String token,
-        @ApiParam("body")  @RequestBody String cars
+    		@ApiParam("body")  @RequestBody SimpleMessage cars
     ) {
-        System.out.println("Add your cars like Mustang, Fusion, GT ... etc");
-        return "The below cars you have Updated with new features\n"+cars;
+        System.out.println("Add your cars like Mustang, Fusion, GT ... etc " + cars.getContent());
+        return "The below cars you have Updated with new features\n"+cars.getContent();
     }
 
     @PutMapping("/cars/colors")
