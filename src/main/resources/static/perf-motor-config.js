@@ -2,11 +2,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
   var headSection = document.getElementById("perf-motor-ui");
 
-  var htmlContent = '<div class="centerme"><h4 id="myAppHeader" class="opblock-tag">'
-      + 'Performance Testing Configuration</h4></div>'
+  var htmlContent = '<div class="logo-area-outer-styleme"><div class="header-styleme"><table class="logo-table-styleme"><tr><td><img src="per-motor-logo.jpg" alt="Perf-Motor Logo" class="logo-styleme"></td><td valign="bottom"><div class="product-name-styleme">PERF MOTOR</div></td></tr></table>'
+      + '</div></div>'
 
   var confDetails = '<div class="config-styleme">'
-      + '<span><div class="opblock opblock-conf"><table>'
+      + '<h4 id="myAppHeader" class="opblock-tag">Performance Testing Configuration</h4>'
+	  + '<span><div id="myConfigTableDiv" class="opblock opblock-conf"><table>'
       + '<tr><td><div class="opblock-summary">'
       + '<span class="opblock-summary-method">Number of requests</span>'
       + '</div></td>'
