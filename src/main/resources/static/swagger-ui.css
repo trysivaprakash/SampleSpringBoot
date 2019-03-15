@@ -1,19 +1,52 @@
 .centerme {
   text-align: center;
 }
+.logo-area-styleme {
+  text-align: left;
+  margin-bottom: 15px;
+}
+.logo-styleme{
+	width:100px;
+	height:100px;
+}
+.product-name-styleme{
+	font-size: 40px;
+    margin-left: 10px;
+    font-family: sans-serif;
+    color: #003366;
+	font-weight: bold;
+	vertical-align: bottom;
+}
 div.centerme {
 	margin: 10px;
 }
-.config-styleme{
-	width:95%;
+.logo-area-outer-styleme{
+		border-bottom: 1px solid rgba(59, 65, 81, .3);
+		margin-bottom: 50px;
+}
+.header-styleme{
+	width:100%;
+	max-width: 1460px;
 	height:auto; 
 	border: none; 
 	margin:0 auto; 
-	padding: 0px
+	padding: 0px;
+}
+.config-styleme{
+	width:100%;
+	max-width: 1460px;
+	height:auto; 
+	border: none; 
+	margin:0 auto; 
+	padding: 0px;
+	margin-bottom: 50px;
 }
 #myAppHeader.opblock-tag{
 	display:inline;
 	border-bottom: none;
+}
+#myConfigTableDiv{
+	margin-top: 10px;
 }
 .swagger-ui {
   /*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */
