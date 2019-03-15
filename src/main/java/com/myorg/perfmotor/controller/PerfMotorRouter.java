@@ -39,8 +39,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 @Controller
 public class PerfMotorRouter {
 
-  //private final String reportPath = System.getProperty("user.dir") + "/src/main/gatling/reports";
-  //private final String reportPath = System.getProperty("user.dir") + "/src/main/webapp/views";
   private final String reportPath = System.getProperty("user.dir") + "/src/main/webapp/resources";
   //private final String simulationClass = "com.myorg.perfmotor.gatling.PerfMotorSimulation";
   private final String dataDirectory = System.getProperty("user.dir") + "/src/main/webapp/data";
@@ -81,7 +79,14 @@ public class PerfMotorRouter {
       int requestNumber = Integer.parseInt(jsonMessage.getString("nbrOfReq"));
       String contentType = "application/json";
       String feederDataFileName = dataDirectory + "/dataNew.csv";
-      String jsonBody = "{\"content\":\"${carName}\"}";  // to test passing a reference in the json body
+      //String jsonBody = "{\"content\":\"${carName}\"}";  // to test passing a reference in the json body
+      String jsonBody = null;
+      try {
+    	  jsonBody = jsonMessage.getString("body");
+    	  System.out.println("nbrOfLoops from the jsonObject : "+jsonBody);
+      }catch(Exception exception) {
+    	  
+      }
       
       try {
 		System.out.println(">>>>>>>>> decoded url : "+URLDecoder.decode(endPointUrl, StandardCharsets.UTF_8.toString()));
