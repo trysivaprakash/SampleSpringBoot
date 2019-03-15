@@ -101,6 +101,8 @@ public class PerfMotorRouter {
       if(jsonMessage.get("fileContent") instanceof String){
     	  writeDataToFile(jsonMessage);
           PerfMotorEnvHolder.dataDirectory_$eq(feederDataFileName);
+      } else {
+    	  PerfMotorEnvHolder.dataDirectory_$eq("defaultDataPath.csv");
       }
 
 

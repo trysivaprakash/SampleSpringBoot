@@ -16,38 +16,38 @@ stats: {
         "ko": "-"
     },
     "maxResponseTime": {
-        "total": "118",
-        "ok": "118",
+        "total": "132",
+        "ok": "132",
         "ko": "-"
     },
     "meanResponseTime": {
-        "total": "13",
-        "ok": "13",
+        "total": "14",
+        "ok": "14",
         "ko": "-"
     },
     "standardDeviation": {
-        "total": "20",
-        "ok": "20",
+        "total": "24",
+        "ok": "24",
         "ko": "-"
     },
     "percentiles1": {
-        "total": "6",
-        "ok": "6",
+        "total": "5",
+        "ok": "5",
         "ko": "-"
     },
     "percentiles2": {
-        "total": "9",
-        "ok": "9",
+        "total": "11",
+        "ok": "11",
         "ko": "-"
     },
     "percentiles3": {
-        "total": "64",
-        "ok": "64",
+        "total": "79",
+        "ok": "79",
         "ko": "-"
     },
     "percentiles4": {
-        "total": "69",
-        "ok": "69",
+        "total": "83",
+        "ok": "83",
         "ko": "-"
     },
     "group1": {
@@ -95,38 +95,38 @@ stats: {
         "ko": "-"
     },
     "maxResponseTime": {
-        "total": "118",
-        "ok": "118",
+        "total": "132",
+        "ok": "132",
         "ko": "-"
     },
     "meanResponseTime": {
-        "total": "13",
-        "ok": "13",
+        "total": "14",
+        "ok": "14",
         "ko": "-"
     },
     "standardDeviation": {
-        "total": "20",
-        "ok": "20",
+        "total": "24",
+        "ok": "24",
         "ko": "-"
     },
     "percentiles1": {
-        "total": "6",
-        "ok": "6",
+        "total": "5",
+        "ok": "5",
         "ko": "-"
     },
     "percentiles2": {
-        "total": "9",
-        "ok": "9",
+        "total": "11",
+        "ok": "11",
         "ko": "-"
     },
     "percentiles3": {
-        "total": "64",
-        "ok": "64",
+        "total": "79",
+        "ok": "79",
         "ko": "-"
     },
     "percentiles4": {
-        "total": "69",
-        "ok": "69",
+        "total": "83",
+        "ok": "83",
         "ko": "-"
     },
     "group1": {
