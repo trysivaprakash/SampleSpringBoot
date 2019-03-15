@@ -5,8 +5,6 @@ import com.myorg.perfmotor.beans.ServiceDetails;
 import com.myorg.perfmotor.gatling.PerfMotorEnvHolder;
 import com.myorg.perfmotor.util.Assister;
 import com.myorg.perfmotor.util.PerfMotorException;
-import com.myorg.samplespringboot.Launcher;
-
 import io.gatling.app.Gatling;
 import io.gatling.core.config.GatlingPropertiesBuilder;
 import java.io.File;
@@ -21,15 +19,18 @@ import java.util.concurrent.CompletableFuture;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.context.annotation.ClassPathScanningCandidateComponentProvider;
 import org.springframework.core.type.filter.AnnotationTypeFilter;
 import org.springframework.stereotype.Controller;
+
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -42,26 +43,35 @@ public class PerfMotorRouter {
   //private final String reportPath = System.getProperty("user.dir") + "/src/main/webapp/views";
   private final String reportPath = System.getProperty("user.dir") + "/src/main/webapp/resources";
   //private final String simulationClass = "com.myorg.perfmotor.gatling.PerfMotorSimulation";
-  private final String dataDirectory = System.getProperty("user.dir") + "/src/main/gatling/data";
-  
+  private final String dataDirectory = System.getProperty("user.dir") + "/src/main/webapp/data";
+
   
 
   @RequestMapping(value = "/runPerfMotor", method = RequestMethod.POST)
-  //@ResponseBody
-  public String runPerformanceTest(@RequestBody String message, 
+  @ResponseBody
+  public synchronized String runPerformanceTest(@RequestBody String message,
 		  HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws PerfMotorException {
-	  
+
+    try {
+      FileUtils.deleteDirectory(new File(reportPath));
+    } catch (IOException e) {
+      throw new PerfMotorException("Exception while deleting existing report file", e);
+    }
+    
 	  System.out.println(">>>>>>> received message : " + message);
-	  
+
 	  JSONObject jsonMessage = new JSONObject(message);
 	  
 	  System.out.println("httpMethod from the jsonObject : "+jsonMessage.getString("method"));
 	  System.out.println("url from the jsonObject : "+jsonMessage.getString("url"));
 	  System.out.println("nbrOfReq from the jsonObject : "+jsonMessage.getString("nbrOfReq"));
 	  System.out.println("nbrOfLoops from the jsonObject : "+jsonMessage.getString("nbrOfLoops"));
-	  System.out.println("bodyPart from the jsonObject : "+jsonMessage.getString("body"));
+
+	  //System.out.println("bodyPart from the jsonObject : "+jsonMessage.getString("body"));
 	  //System.out.println("fileContent from the jsonObject : "+jsonMessage.getBoolean("fileContent"));
 	  
+
+	  //System.out.println("fileContent from the jsonObject : "+jsonMessage.getBoolean("fileContent"));
 
 	  
   	  String baseUrl = "http://localhost:8082/ford/cars";
@@ -89,6 +99,7 @@ public class PerfMotorRouter {
       }
 
 
+
       String simulationClass = "com.myorg.perfmotor.gatling.PerfMotorSimulation";
       GatlingPropertiesBuilder props = new GatlingPropertiesBuilder();
       props.simulationClass(simulationClass);
@@ -98,7 +109,7 @@ public class PerfMotorRouter {
       System.out.println(">>>>>>dat dir "+dataDirectory);
       
 
-      
+      //PerfMotorExecVars perfMotorExecVars = new PerfMotorExecVars();
       perfMotorExecVars.setBaseUrl(baseUrl);
       perfMotorExecVars.setMaxRespTime(50);
       perfMotorExecVars.setRequestName("Sample Request Name");
@@ -116,6 +127,7 @@ public class PerfMotorRouter {
       PerfMotorEnvHolder.loopCount_$eq(loopCount);
       PerfMotorEnvHolder.rampUp_$eq(requestNumber);
       PerfMotorEnvHolder.token_$eq("beare "+httpServletRequest.getHeader("Authorization"));
+      PerfMotorEnvHolder.dataDirectory_$eq(feederDataFileName);
       PerfMotorEnvHolder.httpMethod_$eq(httpMethod);
       PerfMotorEnvHolder.test_$eq(jsonBody);
 
@@ -130,8 +142,9 @@ public class PerfMotorRouter {
       System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>... Actual report folder name: "+actualReportFolder);
 
       
-      return  "resources/" + actualReportFolder + "/index";
+      return  "resources/" + actualReportFolder + "/index.html";
 }
+
 
   @RequestMapping(method = RequestMethod.GET, value = "/perfMotor")
   public String loadServiceDetails(HttpServletRequest request) {
@@ -230,13 +243,9 @@ public class PerfMotorRouter {
 
   private void executeRun(GatlingPropertiesBuilder props) throws PerfMotorException {
 
-    try {
-      FileUtils.deleteDirectory(new File(reportPath));
-      Gatling.fromMap(props.build());
-      props = null;
-    } catch (IOException e) {
-      throw new PerfMotorException("Exception while deleting existing report file", e);
-    }
+    //      FileUtils.deleteDirectory(new File(reportPath));
+    Gatling.fromMap(props.build());
+    props = null;
   }
   
   private void clearFileDirectory(String filePath) {

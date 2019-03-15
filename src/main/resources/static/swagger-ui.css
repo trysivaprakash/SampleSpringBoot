@@ -1,3 +1,20 @@
+.centerme {
+  text-align: center;
+}
+div.centerme {
+	margin: 10px;
+}
+.config-styleme{
+	width:95%;
+	height:auto; 
+	border: none; 
+	margin:0 auto; 
+	padding: 0px
+}
+#myAppHeader.opblock-tag{
+	display:inline;
+	border-bottom: none;
+}
 .swagger-ui {
   /*! normalize.css v7.0.0 | MIT License | github.com/necolas/normalize.css */
   font-family: sans-serif;
@@ -10204,7 +10221,8 @@
 }
 
 .info {
-  margin: 50px 0
+  margin: 50px 0;
+  display:none;
 }
 
 .info hgroup.main {

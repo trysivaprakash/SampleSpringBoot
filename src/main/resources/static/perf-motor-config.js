@@ -2,10 +2,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
   var headSection = document.getElementById("perf-motor-ui");
 
-  var htmlContent = '<div class="opblock-tag-section"><h4 class="opblock-tag">'
-      + '<a class="nostyle"><span>Performance Testing Configuration</span></a></h4></div>'
+  var htmlContent = '<div class="centerme"><h4 id="myAppHeader" class="opblock-tag">'
+      + 'Performance Testing Configuration</h4></div>'
 
-  var confDetails = '<div style="height:auto; border: none; margin: 0px; padding: 0px" >'
+  var confDetails = '<div class="config-styleme">'
       + '<span><div class="opblock opblock-conf"><table>'
       + '<tr><td><div class="opblock-summary">'
       + '<span class="opblock-summary-method">Number of requests</span>'
