@@ -15,6 +15,8 @@ import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.FileUtils;
 import org.json.JSONObject;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -24,6 +26,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -38,15 +41,72 @@ public class PerfMotorRouter {
   private final String dataDirectory = System.getProperty("user.dir") + "/src/main/gatling/data";
   
   
-  
-  @GetMapping("/home")
-  public String home(HttpServletRequest request, Model model) {
-	  model.addAttribute("name", "bereket");
-	  return "test";
-	  
-  }
 
-  @RequestMapping(method = RequestMethod.GET, value = "/perfMotor.html")
+  @RequestMapping(value = "/runPerfMotor", method = RequestMethod.POST)
+  //@ResponseBody
+  public String runPerformanceTest(@RequestBody String message, 
+		  HttpServletRequest httpServletRequest, HttpServletResponse httpServletResponse) throws PerfMotorException {
+	  
+	  System.out.println(">>>>>>> received message : " + message);
+	  
+	  JSONObject jsonMessage = new JSONObject(message);
+	  
+	  System.out.println("httpMethod from the jsonObject : "+jsonMessage.getString("method"));
+	  System.out.println("url from the jsonObject : "+jsonMessage.getString("url"));
+	  System.out.println("nbrOfReq from the jsonObject : "+jsonMessage.getString("nbrOfReq"));
+	  System.out.println("nbrOfLoops from the jsonObject : "+jsonMessage.getString("nbrOfLoops"));
+	  System.out.println("fileContent from the jsonObject : "+jsonMessage.getBoolean("fileContent"));
+	  
+  	  String baseUrl = "http://localhost:8082/ford/cars";
+  	  String endPointUrl = jsonMessage.getString("url");
+      String httpMethod = jsonMessage.getString("method");
+      int loopCount = Integer.parseInt(jsonMessage.getString("nbrOfLoops"));
+      int requestNumber = Integer.parseInt(jsonMessage.getString("nbrOfReq"));
+      String contentType = "application/json";
+      String feederDataFileName = "placeHoldeFeeder.csv";
+      String jsonBody = "{\"content\":\"${carName}\"}";  // to test passing a reference in the json body
+
+      String simulationClass = "com.myorg.perfmotor.gatling.PerfMotorSimulation";
+      GatlingPropertiesBuilder props = new GatlingPropertiesBuilder();
+      props.simulationClass(simulationClass);
+      props.resultsDirectory(reportPath);
+      props.dataDirectory(dataDirectory);
+      
+      System.out.println(">>>>>>dat dir "+dataDirectory);
+      
+
+      PerfMotorExecVars perfMotorExecVars = new PerfMotorExecVars();
+      perfMotorExecVars.setBaseUrl(baseUrl);
+      perfMotorExecVars.setMaxRespTime(50);
+      perfMotorExecVars.setRequestName("Sample Request Name");
+      perfMotorExecVars.setScenarioName("Sample Scenario Name");
+
+      PerfMotorEnvHolder.baseUrl_$eq(endPointUrl);
+      PerfMotorEnvHolder.maxRespTime_$eq(500);
+      PerfMotorEnvHolder.requestName_$eq("Sample_req");
+      PerfMotorEnvHolder.scenarioName_$eq("sample scen");
+      PerfMotorEnvHolder.loopCount_$eq(loopCount);
+      PerfMotorEnvHolder.rampUp_$eq(requestNumber);
+      PerfMotorEnvHolder.token_$eq("beare "+httpServletRequest.getHeader("Authorization"));
+      PerfMotorEnvHolder.dataDirectory_$eq(feederDataFileName);
+      PerfMotorEnvHolder.httpMethod_$eq(httpMethod);
+      PerfMotorEnvHolder.test_$eq(jsonBody);
+
+
+      executeRun(props);
+      perfMotorExecVars = null;
+      
+      
+      File file = new File(System.getProperty("user.dir") + "/src/main/webapp/resources");
+      String[] listOfSubfolders = file.list();
+      String actualReportFolder = listOfSubfolders[0];
+      System.out.println(">>>>>>>>>>>>>>>>>>>>>>>>>... Actual report folder name: "+actualReportFolder);
+
+      
+      return  "resources/" + actualReportFolder + "/index";
+}
+
+  @RequestMapping(method = RequestMethod.GET, value = "/perfMotor")
   public String loadServiceDetails(HttpServletRequest request) {
     StringBuilder url = getUrl(request);
     try {
@@ -73,10 +133,10 @@ public class PerfMotorRouter {
     } catch (PerfMotorException e) {
       //TODO implement
     }
-    return "htmlpage";
+    return "perf-motor";
   }
 
-    @RequestMapping(value = "/runPerformanceTest", method = RequestMethod.GET)
+    /*@RequestMapping(value = "/runPerformanceTest", method = RequestMethod.GET)
     //@ResponseBody
     public String runPerformanceTest(HttpServletRequest httpServletRequest) throws PerfMotorException {
     	
@@ -128,7 +188,7 @@ public class PerfMotorRouter {
 
         
         return  actualReportFolder + "/index";
-  }
+  }*/
 
   private StringBuilder getUrl(HttpServletRequest request) {
     StringBuilder url = new StringBuilder()
