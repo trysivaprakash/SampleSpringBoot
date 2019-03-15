@@ -16,6 +16,7 @@ object PerfMotorEnvHolder {
   var dataDirectory = "defaultEmptyData.csv"
   var test = ""
   var jsonBody = ""
+  var rampUserOver = "5";
 
 //  val baseUrl = scala.util.Properties.envOrElse("baseURL", "")
 

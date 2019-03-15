@@ -134,7 +134,7 @@ public class PerfMotorRouter {
       PerfMotorEnvHolder.loopCount_$eq(loopCount);
       PerfMotorEnvHolder.rampUp_$eq(requestNumber);
       PerfMotorEnvHolder.token_$eq("beare "+httpServletRequest.getHeader("Authorization"));
-      PerfMotorEnvHolder.dataDirectory_$eq(feederDataFileName);
+//      PerfMotorEnvHolder.dataDirectory_$eq(feederDataFileName);
       PerfMotorEnvHolder.httpMethod_$eq(httpMethod);
       PerfMotorEnvHolder.test_$eq(jsonBody);
 
