@@ -10,7 +10,11 @@ import com.myorg.samplespringboot.Launcher;
 import io.gatling.app.Gatling;
 import io.gatling.core.config.GatlingPropertiesBuilder;
 import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.util.ResourceBundle;
 import java.util.concurrent.CompletableFuture;
 
@@ -55,7 +59,10 @@ public class PerfMotorRouter {
 	  System.out.println("url from the jsonObject : "+jsonMessage.getString("url"));
 	  System.out.println("nbrOfReq from the jsonObject : "+jsonMessage.getString("nbrOfReq"));
 	  System.out.println("nbrOfLoops from the jsonObject : "+jsonMessage.getString("nbrOfLoops"));
-	  System.out.println("fileContent from the jsonObject : "+jsonMessage.getBoolean("fileContent"));
+	  System.out.println("bodyPart from the jsonObject : "+jsonMessage.getString("body"));
+	  //System.out.println("fileContent from the jsonObject : "+jsonMessage.getBoolean("fileContent"));
+	  
+
 	  
   	  String baseUrl = "http://localhost:8082/ford/cars";
   	  String endPointUrl = jsonMessage.getString("url");
@@ -63,8 +70,24 @@ public class PerfMotorRouter {
       int loopCount = Integer.parseInt(jsonMessage.getString("nbrOfLoops"));
       int requestNumber = Integer.parseInt(jsonMessage.getString("nbrOfReq"));
       String contentType = "application/json";
-      String feederDataFileName = "placeHoldeFeeder.csv";
+      String feederDataFileName = dataDirectory + "/dataNew.csv";
       String jsonBody = "{\"content\":\"${carName}\"}";  // to test passing a reference in the json body
+      
+      try {
+		System.out.println(">>>>>>>>> decoded url : "+URLDecoder.decode(endPointUrl, StandardCharsets.UTF_8.toString()));
+	} catch (UnsupportedEncodingException e) {
+		// TODO Auto-generated catch block
+		System.out.println(">>>>>>>>> decoded url faild ");
+		//e.printStackTrace();
+	}
+	  
+	  PerfMotorExecVars perfMotorExecVars = new PerfMotorExecVars();
+
+      if(jsonMessage.get("fileContent") instanceof String){
+    	  writeDataToFile(jsonMessage);
+          PerfMotorEnvHolder.dataDirectory_$eq(feederDataFileName);
+      }
+
 
       String simulationClass = "com.myorg.perfmotor.gatling.PerfMotorSimulation";
       GatlingPropertiesBuilder props = new GatlingPropertiesBuilder();
@@ -75,20 +98,24 @@ public class PerfMotorRouter {
       System.out.println(">>>>>>dat dir "+dataDirectory);
       
 
-      PerfMotorExecVars perfMotorExecVars = new PerfMotorExecVars();
+      
       perfMotorExecVars.setBaseUrl(baseUrl);
       perfMotorExecVars.setMaxRespTime(50);
       perfMotorExecVars.setRequestName("Sample Request Name");
       perfMotorExecVars.setScenarioName("Sample Scenario Name");
 
-      PerfMotorEnvHolder.baseUrl_$eq(endPointUrl);
+      try {
+		PerfMotorEnvHolder.baseUrl_$eq(URLDecoder.decode(endPointUrl, StandardCharsets.UTF_8.toString()));
+	} catch (UnsupportedEncodingException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
       PerfMotorEnvHolder.maxRespTime_$eq(500);
       PerfMotorEnvHolder.requestName_$eq("Sample_req");
       PerfMotorEnvHolder.scenarioName_$eq("sample scen");
       PerfMotorEnvHolder.loopCount_$eq(loopCount);
       PerfMotorEnvHolder.rampUp_$eq(requestNumber);
       PerfMotorEnvHolder.token_$eq("beare "+httpServletRequest.getHeader("Authorization"));
-      PerfMotorEnvHolder.dataDirectory_$eq(feederDataFileName);
       PerfMotorEnvHolder.httpMethod_$eq(httpMethod);
       PerfMotorEnvHolder.test_$eq(jsonBody);
 
@@ -210,6 +237,40 @@ public class PerfMotorRouter {
     } catch (IOException e) {
       throw new PerfMotorException("Exception while deleting existing report file", e);
     }
+  }
+  
+  private void clearFileDirectory(String filePath) {
+	  try {
+		FileUtils.deleteDirectory(new File(filePath+"/data"));
+		System.out.println(">>>>>>> data directory cleared");
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}
+  }
+  
+  private void writeDataToFile(JSONObject feederData) {
+	  
+	  FileWriter writer =null;
+	  try {
+		writer = new FileWriter(dataDirectory+"/dataNew.csv", false);
+		writer.append(feederData.getString("fileContent"));
+	} catch (IOException e) {
+		// TODO Auto-generated catch block
+		e.printStackTrace();
+	}finally {
+		if(null != writer) {
+		try {
+			System.out.println(">>>>>>>>>>>>>>> flushing the writer");
+			writer.flush();
+			writer.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		}
+		
+	}
   }
 
 }

@@ -16,16 +16,19 @@ class PerfMotorSimulation extends Simulation {
   "Authorization" -> PerfMotorEnvHolder.token
   )
   
-  var flag = true;
+  var flag = false;
   var jsonBOdyFlag = true;
   
   try {
-   val bulkCsvRequestData  = csv("/dcarData.csv").circular
-  println(">>>>>>>>>>>>> userData : "+bulkCsvRequestData)
+    println(">>>>>>>>> checking feeder file on path : "+PerfMotorEnvHolder.dataDirectory)
+   val bulkCsvRequestData  = csv(PerfMotorEnvHolder.dataDirectory).circular
+  println(">>>>>>>>>>>>> userData in PerfMotor Simulation : "+bulkCsvRequestData)
+    flag = true;
   }
   catch {
     case exception : Exception => {
       flag = false;
+      println(">>>>>>exception occured while reading csv, probable cuase...no feeder data provided.")
     }
   }
   
@@ -35,101 +38,121 @@ class PerfMotorSimulation extends Simulation {
   println(">>>>>>> feederDataFlag : "+flag)
   println(">>>>>>> jsonBodyDataFlag : "+jsonBOdyFlag)
   println(">>>>>>> jsonBodyData : "+PerfMotorEnvHolder.test)
-  println("request method : >>>>  " + "\"\"\"" + PerfMotorEnvHolder.httpMethod + "\"\"\"")
+  println("request method : >>>>  " +  PerfMotorEnvHolder.httpMethod )
+  println("evaluate : >>>>  " +  (flag && ("GET".equals(PerfMotorEnvHolder.httpMethod) )))
   
   
   val temp = PerfMotorEnvHolder.loopCount*PerfMotorEnvHolder.rampUp
   
-  val feeder = Iterator.continually(Map("emailllllll" -> (Random.alphanumeric.take(temp).mkString + "@foo.com")))
+  val feeder = Iterator.continually(Map("emailllllll" -> (Random.alphanumeric.take(temp).mkString + "@foo.com"))) 
+  
 
 
-  val perfMotorScenario = scenario(PerfMotorEnvHolder.scenarioName+(PerfMotorEnvHolder.maxRespTime))
-  	.doIf(flag && ("GET".equals(PerfMotorEnvHolder.httpMethod))) {
-  	 feed(csv("/carData.csv").circular)  	
-  	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
-      exec(
-	      http(PerfMotorEnvHolder.requestName)
-	      .httpRequest(PerfMotorEnvHolder.requestName, PerfMotorEnvHolder.baseUrl)
-	      .headers(header)
-	      .check(status.is(200))
-   )}
-  	}
-  .doIf(flag && ("POST".equals(PerfMotorEnvHolder.httpMethod))){
-    println(">>>>>>>>> I am in the right spot....")
-  	 feed(csv("/carData.csv").circular)  	
-  	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
-      exec(
-	      http(PerfMotorEnvHolder.requestName)
-	      .httpRequest(PerfMotorEnvHolder.httpMethod, PerfMotorEnvHolder.baseUrl)
-	      .headers(header)
-	      .body(StringBody(PerfMotorEnvHolder.test)).asJSON
-	      .check(status.is(200))
-   )}}
-    .doIf("GET".equals(PerfMotorEnvHolder.httpMethod)){
-    println(">>>>>>>>> I am in the right spot....just GET method")
-  	 feed(feeder)  	
-  	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
-      exec(
-	      http(PerfMotorEnvHolder.requestName)
-	      .httpRequest("GET", PerfMotorEnvHolder.baseUrl)
-	      .headers(header)
-	      .check(status.is(200))
-   )}}
-  .doIf(("POST".equals(PerfMotorEnvHolder.httpMethod)) && jsonBOdyFlag){
-  	 feed(feeder)  	
-  	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
-      exec(
-	      http(PerfMotorEnvHolder.requestName)
-	      .httpRequest(PerfMotorEnvHolder.httpMethod, PerfMotorEnvHolder.baseUrl)
-	      .headers(header)
-	      .body(StringBody(PerfMotorEnvHolder.test)).asJSON
-	      .check(status.is(200))
-   )}}
-  .doIf(flag && ("PUT".equals(PerfMotorEnvHolder.httpMethod))){
-  	 feed(csv("/carData.csv").circular)  	
-  	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
-      exec(
-	      http(PerfMotorEnvHolder.requestName)
-	      .httpRequest(PerfMotorEnvHolder.requestName, PerfMotorEnvHolder.baseUrl)
-	      .headers(header)
-	      .body(RawFileBody("/postBody.json"))
-	      .check(status.is(200))
-   )}}
-  .doIf("PUT".equals(PerfMotorEnvHolder.httpMethod)){
-  	 feed(csv("/carData.csv").circular)  	
-  	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
-      exec(
-	      http(PerfMotorEnvHolder.requestName)
-	      .httpRequest(PerfMotorEnvHolder.requestName, PerfMotorEnvHolder.baseUrl)
-	      .headers(header)
-	      .body(RawFileBody("/postBody.json"))
-	      .check(status.is(200))
-   )}}
-  .doIf(flag && ("DELETE".equals(PerfMotorEnvHolder.httpMethod))){
-  	 feed(csv("/carData.csv").circular)  	
-  	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
-      exec(
-	      http(PerfMotorEnvHolder.requestName)
-	      .httpRequest(PerfMotorEnvHolder.requestName, PerfMotorEnvHolder.baseUrl)
-	      .headers(header)
-	      .check(status.is(200))
-   )}}
-  .doIf("DELETE".equals(PerfMotorEnvHolder.httpMethod)){
-  	 feed(csv("/carData.csv").circular)  	
-  	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
-      exec(
-	      http(PerfMotorEnvHolder.requestName)
-	      .httpRequest(PerfMotorEnvHolder.requestName, PerfMotorEnvHolder.baseUrl)
-	      .headers(header)
-	      .check(status.is(200))
-   )}}
+  
+  
+  if((!flag) && ("GET".equals(PerfMotorEnvHolder.httpMethod))) {
 
+    val perfMotorScenario = scenario(PerfMotorEnvHolder.scenarioName)
+      .repeat(PerfMotorEnvHolder.loopCount, "n")(
+        exec(
+          http(PerfMotorEnvHolder.requestName)
+            .httpRequest(PerfMotorEnvHolder.httpMethod, PerfMotorEnvHolder.baseUrl)
+            .headers(header)
+            .check(status.is(200))))
+            
+    val perfMotorSimulation = perfMotorScenario.inject(atOnceUsers(PerfMotorEnvHolder.rampUp))
 
-  val perfMotorSimulation = perfMotorScenario.inject(atOnceUsers(PerfMotorEnvHolder.rampUp))
-
-  setUp(perfMotorSimulation).protocols(httpConf)
-  .assertions(
+    setUp(perfMotorSimulation).protocols(httpConf)
+      .assertions(
   	//forAll.reponseTime.max.lt(1000)
-  )
-  PerfMotorEnvHolder.maxRespTime = PerfMotorEnvHolder.maxRespTime + 1;
+  ) 
+   
+  } else if ((flag) && ("GET".equals(PerfMotorEnvHolder.httpMethod))) {
+    println(">>>>>>>> here i am")
+    val perfMotorScenario = scenario(PerfMotorEnvHolder.scenarioName)
+      .feed(csv(PerfMotorEnvHolder.dataDirectory).circular)
+      .repeat(PerfMotorEnvHolder.loopCount, "n")(
+        exec(
+          http(PerfMotorEnvHolder.requestName)
+            .httpRequest(PerfMotorEnvHolder.httpMethod, PerfMotorEnvHolder.baseUrl)
+            .headers(header)
+            .check(status.is(200))))
+
+    val perfMotorSimulation = perfMotorScenario.inject(atOnceUsers(PerfMotorEnvHolder.rampUp))
+
+    setUp(perfMotorSimulation).protocols(httpConf)
+      .assertions( //forAll.reponseTime.max.lt(1000)
+      )
+
+  } else if (flag && ((("PUT".equals(PerfMotorEnvHolder.httpMethod))) || ("POST".equals(PerfMotorEnvHolder.httpMethod)))) {
+
+    val perfMotorScenario = scenario(PerfMotorEnvHolder.scenarioName)
+      .feed(csv(PerfMotorEnvHolder.dataDirectory).circular)
+      .repeat(PerfMotorEnvHolder.loopCount, "n")(
+        exec(
+          http(PerfMotorEnvHolder.requestName)
+            .httpRequest(PerfMotorEnvHolder.httpMethod, PerfMotorEnvHolder.baseUrl)
+            .headers(header)
+            .body(StringBody(PerfMotorEnvHolder.test)).asJSON
+            .check(status.is(200))))
+
+    val perfMotorSimulation = perfMotorScenario.inject(atOnceUsers(PerfMotorEnvHolder.rampUp))
+
+    setUp(perfMotorSimulation).protocols(httpConf)
+      .assertions( //forAll.reponseTime.max.lt(1000)
+      )
+
+  } else if ((!flag) && (("PUT".equals(PerfMotorEnvHolder.httpMethod)) || ("POST".equals(PerfMotorEnvHolder.httpMethod)))) {
+
+    val perfMotorScenario = scenario(PerfMotorEnvHolder.scenarioName)
+      .repeat(PerfMotorEnvHolder.loopCount, "n")(
+        exec(
+          http(PerfMotorEnvHolder.requestName)
+            .httpRequest(PerfMotorEnvHolder.httpMethod, PerfMotorEnvHolder.baseUrl)
+            .headers(header)
+            .body(StringBody(PerfMotorEnvHolder.test)).asJSON
+            .check(status.is(200))))
+            
+
+    val perfMotorSimulation = perfMotorScenario.inject(atOnceUsers(PerfMotorEnvHolder.rampUp))
+
+    setUp(perfMotorSimulation).protocols(httpConf)
+      .assertions( //forAll.reponseTime.max.lt(1000)
+      )
+
+  }else if ((flag) && ("DELETE".equals(PerfMotorEnvHolder.httpMethod))) {
+
+    val perfMotorScenario = scenario(PerfMotorEnvHolder.scenarioName)
+      .feed(csv(PerfMotorEnvHolder.dataDirectory).circular)
+      .repeat(PerfMotorEnvHolder.loopCount, "n")(
+        exec(
+          http(PerfMotorEnvHolder.requestName)
+            .httpRequest(PerfMotorEnvHolder.httpMethod, PerfMotorEnvHolder.baseUrl)
+            .headers(header)
+            .check(status.is(200))))
+
+    val perfMotorSimulation = perfMotorScenario.inject(atOnceUsers(PerfMotorEnvHolder.rampUp))
+
+    setUp(perfMotorSimulation).protocols(httpConf)
+      .assertions( //forAll.reponseTime.max.lt(1000)
+      )
+
+  }else if ((!flag) && ("DELETE".equals(PerfMotorEnvHolder.httpMethod))) {
+
+    val perfMotorScenario = scenario(PerfMotorEnvHolder.scenarioName)
+      .repeat(PerfMotorEnvHolder.loopCount, "n")(
+        exec(
+          http(PerfMotorEnvHolder.requestName)
+            .httpRequest(PerfMotorEnvHolder.httpMethod, PerfMotorEnvHolder.baseUrl)
+            .headers(header)
+            .check(status.is(200))))
+
+    val perfMotorSimulation = perfMotorScenario.inject(atOnceUsers(PerfMotorEnvHolder.rampUp))
+
+    setUp(perfMotorSimulation).protocols(httpConf)
+      .assertions( //forAll.reponseTime.max.lt(1000)
+      )
+
+  }
+  
 }
