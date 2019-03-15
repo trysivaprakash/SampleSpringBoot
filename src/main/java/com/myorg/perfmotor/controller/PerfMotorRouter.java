@@ -138,25 +138,9 @@ public class PerfMotorRouter {
       PerfMotorEnvHolder.httpMethod_$eq(httpMethod);
       PerfMotorEnvHolder.test_$eq(jsonBody);
 
-      CompletableFuture.runAsync(()->{
-    	  try {
-			executeRun(props);
-		} catch (PerfMotorException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-      });
-      
-      try {
-    	  System.out.println(">>>>>>Thread in sleep mode");
-		Thread.sleep(5000);
-		 System.out.println(">>>>>>Thread started");
-	} catch (InterruptedException e) {
-		// TODO Auto-generated catch block
-		e.printStackTrace();
-	}
 
-      //executeRun(props);
+
+      executeRun(props);
       perfMotorExecVars = null;
       
       
