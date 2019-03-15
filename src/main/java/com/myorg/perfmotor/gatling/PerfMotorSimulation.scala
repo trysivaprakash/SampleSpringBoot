@@ -20,7 +20,7 @@ class PerfMotorSimulation extends Simulation {
   var jsonBOdyFlag = true;
   
   try {
-   val bulkCsvRequestData  = csv("/carData.csv").circular
+   val bulkCsvRequestData  = csv("/dcarData.csv").circular
   println(">>>>>>>>>>>>> userData : "+bulkCsvRequestData)
   }
   catch {
@@ -66,6 +66,7 @@ class PerfMotorSimulation extends Simulation {
 	      .check(status.is(200))
    )}}
     .doIf("GET".equals(PerfMotorEnvHolder.httpMethod)){
+    println(">>>>>>>>> I am in the right spot....just GET method")
   	 feed(feeder)  	
   	   	.repeat(PerfMotorEnvHolder.loopCount, "n") {
       exec(

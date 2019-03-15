@@ -3,7 +3,7 @@ spring:
     name: sample-spring-boot
   mvc:
     view:
-      prefix: /resources/
+      prefix: /
       suffix: .html
   resources:
     add-mappings: true
