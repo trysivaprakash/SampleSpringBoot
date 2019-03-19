@@ -20,6 +20,13 @@ repositories {
     mavenCentral()
 }
 
+jar {
+    doFirst {
+        from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    }
+    exclude 'META-INF/*.RSA', 'META-INF/*.SF','META-INF/*.DSA'
+}
+
 group = 'com.myorg.samplespringboot'
 version = '1.0.0'
 description = """Sample Spring Boot Service"""
@@ -83,22 +90,23 @@ configurations.all {
 
 dependencies {
     compile(group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '1.4.2.RELEASE')
-    compile(group: 'org.springframework', name: 'spring-jdbc', version: '5.0.1.RELEASE')
+//    compile(group: 'org.springframework', name: 'spring-jdbc', version: '5.0.1.RELEASE')
 //    compile(group: 'org.springframework.boot', name: 'spring-boot-starter-actuator', version: '1.5.7.RELEASE')
     compile(group: 'io.springfox', name: 'springfox-swagger2', version: '2.6.1')
     compile(group: 'io.springfox', name: 'springfox-swagger-ui', version: '2.6.1')
-    compile(group: 'org.springframework.cloud', name: 'spring-cloud-config-client', version: '1.2.3.RELEASE')
+//    compile(group: 'org.springframework.cloud', name: 'spring-cloud-config-client', version: '1.2.3.RELEASE')
     compile(group: 'org.springframework', name: 'spring-context-support', version: '4.3.8.RELEASE')
-    compile(group: 'com.sun.mail', name: 'javax.mail', version: '1.5.6')
-    compileOnly('org.projectlombok:lombok')
-    
+//    compile(group: 'com.sun.mail', name: 'javax.mail', version: '1.5.6')
+//    compileOnly('org.projectlombok:lombok')
+    compile files('libs/PerfMotor.jar')
+
     //PerfMotor
-    compile(group: 'io.gatling', name: 'gatling-core', version: '2.3.0')
-    compile(group: 'io.gatling', name: 'gatling-app', version: '2.3.0')
-    compile(group: 'commons-io', name: 'commons-io', version: '2.6')
-    compile(group: 'org.scala-lang', name: 'scala-library', version: '2.12.3')
-    compile(group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: '2.3.0')
-    compile(group: 'io.gatling', name: 'gatling-app', version: '2.3.0')
+//    compile(group: 'io.gatling', name: 'gatling-core', version: '2.3.0')
+//    compile(group: 'io.gatling', name: 'gatling-app', version: '2.3.0')
+//    compile(group: 'commons-io', name: 'commons-io', version: '2.6')
+//    compile(group: 'org.scala-lang', name: 'scala-library', version: '2.12.3')
+//    compile(group: 'io.gatling.highcharts', name: 'gatling-charts-highcharts', version: '2.3.0')
+//    compile(group: 'io.gatling', name: 'gatling-app', version: '2.3.0')
     
     //Database related
     compile(group: 'com.zaxxer', name: 'HikariCP', version: '2.6.0')
