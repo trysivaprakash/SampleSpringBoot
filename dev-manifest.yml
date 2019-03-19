@@ -1,7 +1,0 @@
----
-inherit: base-manifest.yml
-applications:
-- name: sample-spring-boot
-  host: sample-spring-boot
-env:
-  lcp: 'DEV'
