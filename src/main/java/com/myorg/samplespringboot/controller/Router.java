@@ -191,8 +191,6 @@ public class Router {
         System.out.println("Given token - " + token + " is not authorized. Can not show the price of the " + carName);
 
         return "Given token - " + token + " is not authorized. The Prices are updated.Below are the new prices " + carName+"Price is:"+body;
-
-
     }
 
 //DELETE STARTS FROM HERE

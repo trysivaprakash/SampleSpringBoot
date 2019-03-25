@@ -9,7 +9,7 @@ import springfox.documentation.swagger2.annotations.EnableSwagger2;
 
 @SpringBootApplication
 @EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class})
-@ComponentScan("com.myorg")
+@ComponentScan({"com.myorg","perfmotor.controller"})
 @EnableSwagger2
 public class Launcher {
 
